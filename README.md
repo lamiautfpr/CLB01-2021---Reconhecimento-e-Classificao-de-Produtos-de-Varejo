@@ -1,1 +1,1 @@
-# CLB01-2021---Reconhecimento-e-Classifica-o-de-Produtos-de-Varejo
+# CLB01-2021---Reconhecimento-e-Classificao-de-Produtos-de-Varejo
