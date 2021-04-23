@@ -7,7 +7,7 @@ ___
 ## Descrição
 Este algoritmo funciona como um detector de desfoque.
 
-Pode ser executado com a webcam, basta clocar o repositório e iniciar
+Pode ser executado com a webcam, basta clonar o repositório e iniciar
 o arquivo blur_detector_video.py.
 
 Foi criado baseado na Transformada de Fourier.
