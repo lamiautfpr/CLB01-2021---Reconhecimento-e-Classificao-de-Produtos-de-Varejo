@@ -7,7 +7,7 @@ def detect_blur_fft(image, size=60, thresh=10, vis=False):
 	(h, w) = image.shape
 	(cX, cY) = (int(w / 2.0), int(h / 2.0))
 
-# calcula a transformação de fourier
+# calcula a transformada de fourier
 fft = np.fft.fft2(image)
 fftShift = np.fft.fftshift(fft)
 
@@ -30,7 +30,7 @@ fftShift = np.fft.fftshift(fft)
 		plt.show()
 
 # remove baixas frequências
-# aplica a transformação de fourier inversa
+# aplica a transformada de fourier inversa
 fftShift[cY - size:cY + size, cX - size:cX + size] = 0
 fftShift = np.fft.ifftshift(fftShift)
 recon = np.fft.ifft2(fftShift)
