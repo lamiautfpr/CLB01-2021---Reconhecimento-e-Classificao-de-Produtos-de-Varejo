@@ -1,7 +1,5 @@
 Frame Selector
 
-Status do Projeto: Em desenvolvimento :warning:
-
 ___
 
 ## Descrição
