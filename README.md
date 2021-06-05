@@ -2,12 +2,11 @@
 
 Status do Projeto: Em desenvolvimento :warning:
 
-
 ## Resumo
 
 ![Diagrama](https://user-images.githubusercontent.com/55768838/120213631-cde89c80-c209-11eb-9169-d546ae6016aa.png)
 
-O projeto utiliza das tecnologias de visão computacional para desenvolver um detector de produtos de supermercado para Android e iOS.
+O projeto utiliza das tecnologias de visão computacional para desenvolver um detector de produtos de supermercado para Android e iOS .
 
 O código disponível no github contém todas as partes da estrutura do projeto.
 
