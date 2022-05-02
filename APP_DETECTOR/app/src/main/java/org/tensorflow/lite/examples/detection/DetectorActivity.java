@@ -214,9 +214,8 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                 canvas.drawRect(location, paint);
 
                 cropToFrameTransform.mapRect(location);
-                Rect locationInt = new Rect();
-                location.round(locationInt);
-                Bitmap cropDetection = Bitmap.createBitmap(rgbFrameBitmap, Math.abs(locationInt.left),Math.abs(locationInt.top),locationInt.width(),locationInt.height());
+                int intRect[] = converteRectF(location);
+                Bitmap cropDetection = Bitmap.createBitmap(rgbFrameBitmap, intRect[0], intRect[1], intRect[3], intRect[2]);
 
                 TextRecognizer recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
                 InputImage inputImage = InputImage.fromBitmap(cropDetection, sensorOrientation);
@@ -294,4 +293,16 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
   protected void setNumThreads(final int numThreads) {
     runInBackground(() -> detector.setNumThreads(numThreads));
   }
+
+  public int[] converteRectF(RectF location){
+    int converted[] = new int[4];
+    converted[0] = location.left<=0? 1: Math.round(location.left);
+    converted[1] = location.top<=0? 1: Math.round(location.top);
+    converted[2] = converted[1]+location.height()>rgbFrameBitmap.getHeight()?
+            rgbFrameBitmap.getHeight()-converted[1]:Math.round(location.height());
+    converted[3] = converted[0]+location.width()>rgbFrameBitmap.getWidth()?
+            rgbFrameBitmap.getWidth()-converted[0]:Math.round(location.width());
+    return converted;
+  }
+
 }
