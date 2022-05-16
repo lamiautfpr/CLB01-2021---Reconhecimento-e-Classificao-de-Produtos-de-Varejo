@@ -30,6 +30,7 @@ import android.util.TypedValue;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import org.tensorflow.lite.examples.detection.SORT;
 import org.tensorflow.lite.examples.detection.env.BorderedText;
 import org.tensorflow.lite.examples.detection.env.ImageUtils;
 import org.tensorflow.lite.examples.detection.env.Logger;
@@ -67,6 +68,7 @@ public class MultiBoxTracker {
   private int frameWidth;
   private int frameHeight;
   private int sensorOrientation;
+  private SORT KLtracker = new SORT(30, 3, 0.3f);
 
   public MultiBoxTracker(final Context context) {
     for (final int color : COLORS) {
@@ -156,7 +158,7 @@ public class MultiBoxTracker {
 
   private void processResults(final List<Recognition> results) {
     final List<Pair<Float, Recognition>> rectsToTrack = new LinkedList<Pair<Float, Recognition>>();
-
+  //  List<Recognition> rectsToTrack = new ArrayList<Recognition>();
     screenRects.clear();
     final Matrix rgbFrameToScreen = new Matrix(getFrameToCanvasMatrix());
 
@@ -180,6 +182,7 @@ public class MultiBoxTracker {
       }
 
       rectsToTrack.add(new Pair<Float, Recognition>(result.getConfidence(), result));
+      //rectsToTrack.add(result);
     }
 
     trackedObjects.clear();
@@ -200,12 +203,31 @@ public class MultiBoxTracker {
         break;
       }
     }
+    // Codigo para executar o tracking
+    /*
+    List<Pair<Integer, float[]>> recs = KLtracker.update(rectsToTrack);
+    System.out.println("recs size:" + recs.size());
+    for (final Pair<Integer, float[]> rec: recs){
+      final TrackedRecognition trackedRecognition = new TrackedRecognition();
+      trackedRecognition.detectionConfidence = 1;
+      trackedRecognition.location = new RectF(rec.second[0], rec.second[3], rec.second[1], rec.second[2]);
+      System.out.println("location " + trackedRecognition.location);
+      trackedRecognition.title = "Detection";
+      trackedRecognition.color = COLORS[trackedObjects.size()];
+      trackedRecognition.id = rec.first;
+      trackedObjects.add(trackedRecognition);
+
+      if (trackedObjects.size() >= COLORS.length) {
+        break;
+      }
+    }*/
   }
 
   private static class TrackedRecognition {
     RectF location;
     float detectionConfidence;
     int color;
+    int id;
     String title;
   }
 }
