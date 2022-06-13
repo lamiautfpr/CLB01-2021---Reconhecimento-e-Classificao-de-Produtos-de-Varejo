@@ -86,7 +86,7 @@ public class SORT {
         return rets;
     }
 
-    private int[] associate_detections_to_trackers(float[][] detections, float[][] predictions){
+    public int[] associate_detections_to_trackers(float[][] detections, float[][] predictions){
 /*
     Calcula inteseccao sobre uniao entre as deteccoes e as previsões para em seguida associar as
     deteccoes e previsoes com maior IOU atraves do hungarian algorithm
@@ -94,16 +94,13 @@ public class SORT {
     if(detections.length == 0 || predictions.length == 0){
         return null;
     }
-    double[][] iou_matrix = new double[detections.length][predictions.length];
+    int[][] iou_matrix = new int[detections.length][predictions.length];
     for(int i=0;i < detections.length; i++){
         for (int j = 0; j < predictions.length; j++) {
-            iou_matrix[i][j] = -calculateIOU(detections[i], predictions[j]);
-            if (Double.isNaN(iou_matrix[i][j])){
-                return new int[0];
-            }
+            iou_matrix[i][j] = -Math.round(calculateIOU(detections[i], predictions[j])*100);
         }
     }
-    int[] assignment = new HungarianAlgorithm(iou_matrix).execute();
+    int[] assignment = new HungarianAlgorithm(iou_matrix).assign();
 
     return assignment;
     }
@@ -111,16 +108,27 @@ public class SORT {
           /*
              Calcula interseccao sobre união de duas bounding boxes na forma [x1, x2, y1, y2]
          */
+        float x1A = Math.min(boxA[0], boxA[1]);
+        float x2A = Math.max(boxA[0], boxA[1]);
+        float y1A = Math.min(boxA[2], boxA[3]);
+        float y2A = Math.max(boxA[2], boxA[3]);
 
-        float xA = Math.max(boxA[0], boxB[0]);
-        float xB = Math.max(boxA[1], boxB[1]);
-        float yA = Math.max(boxA[2], boxB[2]);
-        float yB = Math.max(boxA[3], boxB[3]);
+        float x1B = Math.min(boxB[0], boxB[1]);
+        float x2B = Math.max(boxB[0], boxB[1]);
+        float y1B = Math.min(boxB[2], boxB[3]);
+        float y2B = Math.max(boxB[2], boxB[3]);
 
-        float interArea = Math.max(0 , xB - xA + 1) * Math.max(0 , yB - yA + 1);
+        float x1 = Math.max(x1A, x1B);
+        float x2 = Math.min(x2A, x2B);
+        float y1 = Math.max(y1A, y1B);
+        float y2 = Math.min(y2A, y2B);
 
-        float boxAArea = (boxA[1] - boxA[0] + 1) * (boxA[3] - boxA[2] + 1);
-        float boxBArea = (boxB[1] - boxB[0] + 1) * (boxB[3] - boxB[2] + 1);
+        float interArea = Math.max(0 , x2 - x1 + 1) * Math.max(0 , y2 - y1 + 1);
+        if(interArea == 0){
+            return 0;
+        }
+        float boxAArea = (x2A - x1A + 1) * (y2A - y1A + 1);
+        float boxBArea = (x2B - x1B + 1) * (y2B - y1B + 1);
 
         float iou = interArea / (boxAArea + boxBArea - interArea);
         return iou;
