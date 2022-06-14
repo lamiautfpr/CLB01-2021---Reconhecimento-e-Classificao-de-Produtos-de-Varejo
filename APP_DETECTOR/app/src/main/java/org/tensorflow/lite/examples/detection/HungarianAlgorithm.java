@@ -8,8 +8,22 @@ import java.util.List;
 public class HungarianAlgorithm {
     private int[][] costMatrix;
     private boolean[][] covered;
-    public HungarianAlgorithm(int[][] costmatrix){
-        costMatrix = costmatrix;
+    private int originalRowLength;
+    private int originalColumnLength;
+    public HungarianAlgorithm(int[][] cost){
+        originalRowLength = cost.length;
+        originalColumnLength = cost[0].length;
+        if(originalRowLength == originalColumnLength)
+            costMatrix = cost;
+        else{
+            int len = originalRowLength > originalColumnLength ? originalRowLength : originalColumnLength;
+            costMatrix = new int[len][len];
+            for (int i = 0; i < originalRowLength; i++) {
+                for (int j = 0; j < originalColumnLength; j++) {
+                    costMatrix[i][j] = cost[i][j];
+                }
+            }
+        }
         covered = new boolean[2][costMatrix.length];
         int min = costMatrix[0][0];
         for (int[] matrix : costMatrix) {
@@ -35,7 +49,15 @@ public class HungarianAlgorithm {
             coverZeros();
             createZeros();
         }while(sumCoveredLines() < costMatrix.length);
-        return optimalAssignment();
+        int[] assignment = optimalAssignment();
+        int[] results = new int[originalRowLength];
+        for (int i = 0; i < results.length; i++) {
+            if (assignment[i] < originalColumnLength)
+                results[i] = assignment[i];
+            else
+                results[i] = -1;
+        }
+        return results;
     }
     private void subtractRowMinima(){
         int min;
