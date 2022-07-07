@@ -37,9 +37,9 @@ public class SORT {
             for (Detector.Recognition det : detections) {
                 RectF l = det.getLocation();
                 // Por algum motivo o top representa o menor valor y da bounding box
-                KalmanBoxTracker k = new KalmanBoxTracker(det.getTitle(), l.left, l.right, l.top, l.bottom);
+                KalmanBoxTracker k = new KalmanBoxTracker(det.getTitle(), l.left, l.right, l.bottom, l.top);
                 trackers.add(k);
-                rets.add(new Pair<>(k.getId(), new float[]{l.left, l.right, l.top, l.bottom}));
+                rets.add(new Pair<>(k.getId(), new float[]{l.left, l.right, l.bottom, l.top}));
             }
             return rets;
         }
@@ -76,10 +76,9 @@ public class SORT {
         KalmanBoxTracker t;
         for (int i = trackers.size()-1; i >= 0; i--){
             t = trackers.get(i);
-            if (t.getTime_since_update() < 10){
+            if (t.getTime_since_update() < max_age){
                 rets.add(new Pair<>(t.getId(), t.get_state()));
-            }
-            if (t.getTime_since_update() > max_age){
+            }else{
                 trackers.remove(i);
             }
         }
@@ -96,7 +95,7 @@ public class SORT {
     }
     int[][] iou_matrix = new int[detections.length][predictions.length];
     for(int i=0;i < detections.length; i++){
-        for (int j = 0; j < predictions.length; j++) {
+         for (int j = 0; j < predictions.length; j++) {
             iou_matrix[i][j] = -Math.round(calculateIOU(detections[i], predictions[j])*100);
         }
     }

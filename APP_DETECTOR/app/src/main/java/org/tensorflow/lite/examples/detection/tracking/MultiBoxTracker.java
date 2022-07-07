@@ -68,7 +68,7 @@ public class MultiBoxTracker {
   private int frameWidth;
   private int frameHeight;
   private int sensorOrientation;
-  private SORT KLtracker = new SORT(30, 3, 0.3f);
+  private SORT KLtracker = new SORT(5, 3, 0.3f);
 
   public MultiBoxTracker(final Context context) {
     for (final int color : COLORS) {
@@ -147,7 +147,7 @@ public class MultiBoxTracker {
 
       final String labelString =
           !TextUtils.isEmpty(recognition.title)
-              ? String.format("%s %.2f", recognition.title, (100 * recognition.detectionConfidence))
+              ? String.format("ID:%d %s %.2f",recognition.id, recognition.title, (100 * recognition.detectionConfidence))
               : String.format("%.2f", (100 * recognition.detectionConfidence));
       //            borderedText.drawText(canvas, trackedPos.left + cornerSize, trackedPos.top,
       // labelString);
@@ -157,8 +157,8 @@ public class MultiBoxTracker {
   }
 
   private void processResults(final List<Recognition> results) {
-    final List<Pair<Float, Recognition>> rectsToTrack = new LinkedList<Pair<Float, Recognition>>();
-  //  List<Recognition> rectsToTrack = new ArrayList<Recognition>();
+  //  final List<Pair<Float, Recognition>> rectsToTrack = new LinkedList<Pair<Float, Recognition>>();
+    List<Recognition> rectsToTrack = new LinkedList<Recognition>();
     screenRects.clear();
     final Matrix rgbFrameToScreen = new Matrix(getFrameToCanvasMatrix());
 
@@ -181,8 +181,8 @@ public class MultiBoxTracker {
         continue;
       }
 
-      rectsToTrack.add(new Pair<Float, Recognition>(result.getConfidence(), result));
-      //rectsToTrack.add(result);
+      //rectsToTrack.add(new Pair<Float, Recognition>(result.getConfidence(), result));
+      rectsToTrack.add(result);
     }
 
     trackedObjects.clear();
@@ -191,7 +191,7 @@ public class MultiBoxTracker {
       return;
     }
 
-    for (final Pair<Float, Recognition> potential : rectsToTrack) {
+    /*for (final Pair<Float, Recognition> potential : rectsToTrack) {
       final TrackedRecognition trackedRecognition = new TrackedRecognition();
       trackedRecognition.detectionConfidence = potential.first;
       trackedRecognition.location = new RectF(potential.second.getLocation());
@@ -202,16 +202,14 @@ public class MultiBoxTracker {
       if (trackedObjects.size() >= COLORS.length) {
         break;
       }
-    }
+    }*/
     // Codigo para executar o tracking
-    /*
+
     List<Pair<Integer, float[]>> recs = KLtracker.update(rectsToTrack);
-    System.out.println("recs size:" + recs.size());
     for (final Pair<Integer, float[]> rec: recs){
       final TrackedRecognition trackedRecognition = new TrackedRecognition();
       trackedRecognition.detectionConfidence = 1;
       trackedRecognition.location = new RectF(rec.second[0], rec.second[3], rec.second[1], rec.second[2]);
-      System.out.println("location " + trackedRecognition.location);
       trackedRecognition.title = "Detection";
       trackedRecognition.color = COLORS[trackedObjects.size()];
       trackedRecognition.id = rec.first;
@@ -220,7 +218,7 @@ public class MultiBoxTracker {
       if (trackedObjects.size() >= COLORS.length) {
         break;
       }
-    }*/
+    }
   }
 
   private static class TrackedRecognition {

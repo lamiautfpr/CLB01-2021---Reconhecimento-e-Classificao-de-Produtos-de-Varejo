@@ -109,8 +109,8 @@ public class HungarianAlgorithm {
                         covered[1][col] = false;
                         break;
                     } else{
-                        int row = starredZeroInColumn(col);
                         col = j;
+                        int row = starredZeroInColumn(col);
                         while(row > 0){
                             path.add(new Pair<>(row, col));
                             col = primedZeroInRow(row);

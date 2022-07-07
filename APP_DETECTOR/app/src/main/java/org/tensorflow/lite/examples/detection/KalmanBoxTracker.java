@@ -22,7 +22,7 @@ public class KalmanBoxTracker {
         float cy = y1 + height/2;
         title = in_title;
         // matriz que define as variaveis do sistema, nesse caso: centro em x, centro em y, area , aspect ratio, velocidade em x, velocidade em y, derivada da area
-        double[] initialStateEstimate = new double[]{cx, cy, (width * height), (width / height), 0.0, 0.0, 0.0};
+        double[] initialStateEstimate = new double[]{cx, cy, Math.abs(width * height), Math.abs(width / height), 0.0, 0.0, 0.0};
         double[][] covariance = new double[][]{{   1.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0},
                 {   0.0,    1.0,    0.0,    0.0,    0.0,    0.0,    0.0},
                 {   0.0,    0.0,    1.0,    0.0,    0.0,    0.0,    0.0},
@@ -64,7 +64,7 @@ public class KalmanBoxTracker {
         float cx = x1 + width/2;
         float cy = y1 + height/2;
 
-        double[] z = new double[]{cx, cy, (width * height), (width / height)};
+        double[] z = new double[]{cx, cy, Math.abs(width * height), Math.abs(width / height)};
         kf.correct(z);
 
     }
@@ -80,8 +80,8 @@ public class KalmanBoxTracker {
 
     public float[] get_state(){
         double[] z = kf.getStateEstimation();
-        double width = Math.sqrt(z[3]*z[4]);
-        double height = z[3]/(width+1);
+        double width = Math.sqrt(z[2]*z[3]);
+        double height = z[2]/(width);
         float x1 = (float)(z[0] - width/2);
         float x2 = (float)(z[0] + width/2);
         float y1 = (float)(z[1] - height/2);
